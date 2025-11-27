@@ -1,9 +1,11 @@
 # CURSOR PROMPT: Initialize N'adair Tours Project
 
 ## Context
+
 I'm building a database-driven sustainable tourism booking website called N'adair Tours for a web development coursework assignment. This is a full-stack Next.js application with PostgreSQL database, focused on eco-friendly Scottish tours that align with UN Sustainable Development Goals.
 
 ## Tech Stack (FINAL)
+
 - Next.js 15 (App Router, TypeScript)
 - PostgreSQL (Neon)
 - Drizzle ORM
@@ -17,6 +19,7 @@ I'm building a database-driven sustainable tourism booking website called N'adai
 ## Project Requirements
 
 ### Core Features (Must Have):
+
 1. **Database-driven shop front** - Tours list from PostgreSQL
 2. **Tour booking form** - Customer details, validation
 3. **Tours database table** - title, description, price, images, itinerary, SDG goals
@@ -29,6 +32,7 @@ I'm building a database-driven sustainable tourism booking website called N'adai
 10. **Responsive styling** - Mobile, tablet, desktop
 
 ### Pages Required:
+
 - Home (hero, featured tours, sustainability info)
 - Tours List (grid, pagination, filters)
 - Tour Details (gallery, itinerary, booking)
@@ -85,6 +89,7 @@ Table: admin_users
 ## Initial Setup Tasks
 
 ### Phase 1: Project Initialization
+
 1. Create Next.js 15 app with TypeScript, Tailwind, App Router
 2. Install dependencies:
    - drizzle-orm, postgres
@@ -97,6 +102,7 @@ Table: admin_users
 4. Add shadcn components: button, card, form, input, textarea, table, dialog, badge, separator, select, calendar
 
 ### Phase 2: Database Setup
+
 1. Create Drizzle schema file (`lib/db/schema.ts`) with tours, orders, admin_users tables
 2. Create DB client (`lib/db/index.ts`) with Drizzle connection
 3. Create Drizzle config (`drizzle.config.ts`)
@@ -105,6 +111,7 @@ Table: admin_users
 6. Push schema and seed database
 
 ### Phase 3: Core Structure
+
 1. Create folder structure:
    - `app/(public)/` - public pages
    - `app/admin/` - admin pages
@@ -116,7 +123,9 @@ Table: admin_users
 3. Create basic navigation component
 
 ### Phase 4: Validation Schemas
+
 Create Zod schemas for:
+
 - Tour creation/update
 - Booking form
 - Admin login
@@ -124,6 +133,7 @@ Create Zod schemas for:
 ## Sample Tours Data
 
 Create 10 diverse Scottish tours:
+
 1. Highland Adventure: Glencoe & Ben Nevis (£185, 3 days)
 2. Isle of Skye: Coastal Wonders (£220, 4 days)
 3. Edinburgh Heritage Walk (£75, 1 day)
@@ -136,6 +146,7 @@ Create 10 diverse Scottish tours:
 10. Whisky Trail: Speyside Distilleries (£175, 2 days)
 
 Each tour should have:
+
 - 3 image URLs (use Unsplash)
 - Detailed description (100+ words)
 - 3-5 itinerary items
@@ -146,17 +157,20 @@ Each tour should have:
 ## Design Guidelines
 
 ### Visual Style
+
 - Color scheme: Earth tones (greens, browns, blues) reflecting sustainability
 - Typography: Clean, modern sans-serif
 - Layout: Card-based for tours, spacious whitespace
 - Images: High-quality Scottish landscapes
 
 ### Responsive Breakpoints
+
 - Mobile: 1 column grid (< 768px)
 - Tablet: 2 column grid (768px - 1024px)
 - Desktop: 3 column grid (> 1024px)
 
 ### Accessibility
+
 - Semantic HTML
 - ARIA labels on interactive elements
 - Keyboard navigation
@@ -167,6 +181,7 @@ Each tour should have:
 ## Specific Implementation Notes
 
 ### Cart Implementation (Zustand)
+
 ```typescript
 // store/cart.ts
 - items: CartItem[]
@@ -180,6 +195,7 @@ Each tour should have:
 ```
 
 ### Pagination Implementation
+
 - Server Components with searchParams
 - Use `?page=1` URL parameter
 - Display 9 tours per page (tours list)
@@ -187,6 +203,7 @@ Each tour should have:
 - Display 15 orders per page (admin)
 
 ### Server Actions Pattern
+
 ```typescript
 'use server'
 - Always start with auth check (admin actions)
@@ -196,6 +213,7 @@ Each tour should have:
 ```
 
 ### NextAuth Configuration
+
 - Credentials provider only
 - Admin login page at `/admin/login`
 - Protect all `/admin/*` routes
