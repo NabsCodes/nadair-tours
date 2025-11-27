@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# documentation (keep README.md in root, ignore docs folder)
+!README.md
+
+# Cursor
+.cursor
+
+# Claude	
+.claude
