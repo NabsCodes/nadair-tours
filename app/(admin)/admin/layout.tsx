@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { getAuthSession } from "@/lib/auth-helpers";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Package, ShoppingBag, LayoutDashboard, MapPin } from "lucide-react";
-import { SignOutButton } from "@/components/admin/sign-out-button";
+import { AppSidebar } from "@/components/admin/app-sidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | N'adair Tours",
@@ -19,89 +23,37 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+  const isLoginPage = pathname === "/admin/login";
+
+  // If it's the login page, render without sidebar
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
   // Middleware handles auth redirect, we just need session for display
   const session = await getAuthSession();
 
+  const user = {
+    name: session?.user?.name || "Admin",
+    email: session?.user?.email || "",
+    image: session?.user?.image || null,
+  };
+
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Admin Header */}
-      <header className="bg-background border-b">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/admin" className="group flex items-center gap-2">
-            <div className="relative">
-              <MapPin className="text-primary h-6 w-6 transition-transform group-hover:scale-110" />
-            </div>
-            <span className="font-heading text-foreground text-xl font-bold">
-              N'adair Tours Admin
-            </span>
-          </Link>
-          {session?.user?.name && (
-            <div className="text-muted-foreground text-sm">
-              {session.user.name}
-            </div>
-          )}
-        </div>
-      </header>
-
-      <div className="flex flex-1">
-        {/* Admin Sidebar */}
-        <aside className="bg-muted/30 w-64 border-r p-6">
-          <div className="space-y-4">
-            <div className="mb-8">
-              <h2 className="font-heading text-lg font-bold">Admin Panel</h2>
-              {session?.user?.name && (
-                <p className="text-muted-foreground text-sm">
-                  {session.user.name}
-                </p>
-              )}
-            </div>
-
-            <nav className="space-y-2">
-              <Link href="/admin">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  asChild
-                >
-                  <span>
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </span>
-                </Button>
-              </Link>
-              <Link href="/admin/tours">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  asChild
-                >
-                  <span>
-                    <Package className="mr-2 h-4 w-4" />
-                    Tours
-                  </span>
-                </Button>
-              </Link>
-              <Link href="/admin/orders">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  asChild
-                >
-                  <span>
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    Orders
-                  </span>
-                </Button>
-              </Link>
-            </nav>
-
-            <SignOutButton />
+    <SidebarProvider>
+      <AppSidebar user={user} />
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <span className="font-semibold">Admin Dashboard</span>
           </div>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1">{children}</main>
-      </div>
-    </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

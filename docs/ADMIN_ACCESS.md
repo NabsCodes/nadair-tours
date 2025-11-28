@@ -8,6 +8,7 @@
 ## Setup
 
 1. Make sure your database is seeded:
+
    ```bash
    pnpm db:seed
    ```
@@ -24,4 +25,3 @@ Navigate to `/admin/login` and use the credentials above.
 ## Security Note
 
 ⚠️ **Change the default password in production!**
-

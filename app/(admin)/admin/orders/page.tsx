@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { FaEye, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { OrderStatusFilter } from "@/components/admin/order-status-filter";
 
 export const metadata: Metadata = {
@@ -58,7 +58,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
   return (
     <div className="container mx-auto space-y-6 px-4 py-8">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="space-y-1">
           <h1 className="font-heading text-4xl font-bold">Orders</h1>
           <p className="text-muted-foreground">
             View and manage customer orders
@@ -70,7 +70,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
         <OrderStatusFilter />
       </div>
 
-      <div className="bg-card rounded-lg border">
+      <div className="border-border bg-card rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -86,21 +86,23 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-8 text-center">
+                <TableCell colSpan={7} className="py-12 text-center">
                   <p className="text-muted-foreground">No orders found</p>
                 </TableCell>
               </TableRow>
             ) : (
               orders.map((order) => (
-                <TableRow key={order.id}>
+                <TableRow key={order.id} className="transition-colors">
                   <TableCell className="font-mono text-sm">
                     {order.id}
                   </TableCell>
                   <TableCell className="font-medium">
                     {order.customerName}
                   </TableCell>
-                  <TableCell>{order.customerEmail}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {order.customerEmail}
+                  </TableCell>
+                  <TableCell className="font-semibold">
                     £{parseFloat(order.totalPrice).toFixed(2)}
                   </TableCell>
                   <TableCell>
@@ -120,7 +122,7 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
                   <TableCell className="text-right">
                     <Button asChild variant="ghost" size="icon">
                       <Link href={`/admin/orders/${order.id}`}>
-                        <Eye className="h-4 w-4" />
+                        <FaEye className="h-4 w-4" />
                       </Link>
                     </Button>
                   </TableCell>
@@ -137,18 +139,20 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
             asChild
             variant="outline"
             disabled={!pagination.hasPrev}
-            className={!pagination.hasPrev ? "opacity-50" : ""}
+            size="lg"
           >
             <Link
               href={`/admin/orders?page=${pagination.currentPage - 1}&status=${status}`}
-              className={!pagination.hasPrev ? "pointer-events-none" : ""}
+              className={
+                !pagination.hasPrev ? "pointer-events-none opacity-50" : ""
+              }
             >
-              <ChevronLeft className="mr-2 h-4 w-4" />
+              <FaChevronLeft className="mr-2 h-4 w-4" />
               Previous
             </Link>
           </Button>
 
-          <div className="text-muted-foreground flex items-center gap-2 text-sm">
+          <div className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
             Page {pagination.currentPage} of {pagination.totalPages}
           </div>
 
@@ -156,14 +160,16 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
             asChild
             variant="outline"
             disabled={!pagination.hasNext}
-            className={!pagination.hasNext ? "opacity-50" : ""}
+            size="lg"
           >
             <Link
               href={`/admin/orders?page=${pagination.currentPage + 1}&status=${status}`}
-              className={!pagination.hasNext ? "pointer-events-none" : ""}
+              className={
+                !pagination.hasNext ? "pointer-events-none opacity-50" : ""
+              }
             >
               Next
-              <ChevronRight className="ml-2 h-4 w-4" />
+              <FaChevronRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

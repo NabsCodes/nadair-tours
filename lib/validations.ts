@@ -1,18 +1,48 @@
 import { z } from "zod";
 
 export const bookingSchema = z.object({
-  customerName: z.string().min(2, "Name must be at least 2 characters"),
-  customerEmail: z.string().email("Invalid email address"),
+  customerName: z
+    .string()
+    .min(1, "Full name is required")
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters")
+    .regex(
+      /^[a-zA-Z\s'-]+$/,
+      "Name can only contain letters, spaces, hyphens, and apostrophes",
+    ),
+  customerEmail: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters"),
   customerPhone: z
     .string()
-    .regex(/^[0-9+\-\s()]{10,15}$/, "Invalid phone number format"),
-  customerAddress: z.string().min(5, "Address must be at least 5 characters"),
+    .min(1, "Phone number is required")
+    .regex(
+      /^[0-9+\-\s()]{10,15}$/,
+      "Phone number must be 10-15 digits (e.g., 07123456789)",
+    )
+    .refine((val) => {
+      const digitsOnly = val.replace(/\D/g, "");
+      return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+    }, "Phone number must contain 10-15 digits"),
+  customerAddress: z
+    .string()
+    .min(1, "Address is required")
+    .min(5, "Address must be at least 5 characters")
+    .max(500, "Address must be less than 500 characters"),
   bookingDate: z
-    .date()
+    .date({
+      message: "Please select a valid date",
+    })
     .refine((date) => date >= new Date(new Date().setHours(0, 0, 0, 0)), {
       message: "Booking date must be today or in the future",
     }),
-  notes: z.string().optional(),
+  notes: z
+    .string()
+    .max(1000, "Notes must be less than 1000 characters")
+    .optional()
+    .or(z.literal("")),
 });
 
 export const tourSchema = z.object({

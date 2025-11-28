@@ -2,8 +2,9 @@
 
 import { useCart } from "@/store/cart";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Check } from "lucide-react";
+import { FaShoppingCart, FaCheck, FaSpinner } from "react-icons/fa";
 import { useState } from "react";
+import { toast } from "sonner";
 import type { Tour } from "@/lib/types/tour";
 
 type AddToCartButtonProps = {
@@ -12,35 +13,71 @@ type AddToCartButtonProps = {
 
 export function AddToCartButton({ tour }: AddToCartButtonProps) {
   const addItem = useCart((state) => state.addItem);
-  const [added, setAdded] = useState(false);
+  const items = useCart((state) => state.items);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
-  const handleAddToCart = () => {
-    addItem({
-      tourId: tour.id,
-      tourTitle: tour.title,
-      price: tour.price,
-      duration: tour.duration,
-      image: tour.images?.[0],
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+  const existingItem = items.find((item) => item.tourId === tour.id);
+  const isInCart = !!existingItem;
+
+  const handleAddToCart = async () => {
+    setIsLoading(true);
+
+    // Simulate API call delay for better UX
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    try {
+      addItem({
+        tourId: tour.id,
+        tourTitle: tour.title,
+        price: tour.price,
+        duration: tour.duration,
+        image: tour.images?.[0],
+      });
+
+      setIsAdded(true);
+      toast.success("Added to cart", {
+        description: `${tour.title} has been added to your cart.`,
+      });
+
+      // Reset after 2 seconds
+      setTimeout(() => {
+        setIsAdded(false);
+      }, 2000);
+    } catch {
+      toast.error("Failed to add to cart", {
+        description: "Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Button
       onClick={handleAddToCart}
       size="lg"
-      className="w-full"
-      disabled={added}
+      className="h-12 w-full text-base font-semibold"
+      disabled={isLoading || isAdded}
     >
-      {added ? (
+      {isLoading ? (
         <>
-          <Check className="mr-2 h-5 w-5" />
+          <FaSpinner className="mr-2 h-5 w-5 animate-spin" />
+          Adding...
+        </>
+      ) : isAdded ? (
+        <>
+          <FaCheck className="mr-2 h-5 w-5" />
           Added to Cart
+        </>
+      ) : isInCart ? (
+        <>
+          <FaCheck className="mr-2 h-5 w-5" />
+          In Cart ({existingItem.quantity})
         </>
       ) : (
         <>
-          <ShoppingCart className="mr-2 h-5 w-5" />
+          <FaShoppingCart className="mr-2 h-5 w-5" />
           Add to Cart
         </>
       )}

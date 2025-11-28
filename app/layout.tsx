@@ -4,6 +4,7 @@ import "./globals.css";
 import { headers } from "next/headers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Toaster } from "@/components/ui/sonner";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -48,10 +49,11 @@ export default async function RootLayout({
         ) : (
           <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pt-20">{children}</main>
             <Footer />
           </div>
         )}
+        <Toaster />
       </body>
     </html>
   );

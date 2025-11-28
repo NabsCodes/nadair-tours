@@ -19,4 +19,3 @@ export type Order = {
 };
 
 export type OrderStatus = Order["status"];
-

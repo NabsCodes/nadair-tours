@@ -12,8 +12,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle2, Calendar, Mail, Phone, MapPin } from "lucide-react";
+import {
+  FaCheckCircle,
+  FaCalendarAlt,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import { ClearCartOnMount } from "@/components/cart/clear-cart-on-mount";
+import { ConfirmationToast } from "@/components/booking/confirmation-toast";
 
 export const metadata: Metadata = {
   title: "Booking Confirmed | N'adair Tours",
@@ -61,12 +68,14 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
   return (
     <>
       <ClearCartOnMount />
+      <ConfirmationToast orderId={order.id} customerName={order.customerName} />
       <div className="container mx-auto space-y-8 px-4 py-16">
         <div className="mx-auto max-w-2xl space-y-6 text-center">
-          <div className="flex justify-center">
-            <div className="bg-primary/10 rounded-full p-4">
-              <CheckCircle2 className="text-primary h-16 w-16" />
+          <div className="relative mx-auto flex justify-center">
+            <div className="bg-primary/10 flex h-24 w-24 items-center justify-center rounded-2xl">
+              <FaCheckCircle className="text-primary h-12 w-12" />
             </div>
+            <div className="bg-primary/5 absolute -inset-2 -z-10 rounded-2xl blur-xl" />
           </div>
           <div className="space-y-2">
             <h1 className="font-heading text-4xl font-bold md:text-5xl">
@@ -74,41 +83,60 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
             </h1>
             <p className="text-muted-foreground text-lg">
               Thank you for your booking. We've sent a confirmation email to{" "}
-              {order.customerEmail}
+              <span className="text-foreground font-medium">
+                {order.customerEmail}
+              </span>
             </p>
           </div>
         </div>
 
         <div className="mx-auto max-w-2xl space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Details</CardTitle>
-              <CardDescription>Order #{order.id}</CardDescription>
+          <Card className="border-border">
+            <CardHeader className="border-b-border border-b">
+              <CardTitle className="font-heading text-2xl">
+                Order Details
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Order #{order.id}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
+            <CardContent>
+              <div className="space-y-4 pb-6">
                 <h3 className="font-heading text-lg font-semibold">
                   Customer Information
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Mail className="text-muted-foreground h-4 w-4" />
-                    <span>{order.customerEmail}</span>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                      <FaEnvelope className="text-primary h-5 w-5" />
+                    </div>
+                    <span className="text-foreground">
+                      {order.customerEmail}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="text-muted-foreground h-4 w-4" />
-                    <span>{order.customerPhone}</span>
+                  <div className="flex items-center gap-4">
+                    <div className="bg-secondary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                      <FaPhone className="text-secondary h-5 w-5" />
+                    </div>
+                    <span className="text-foreground">
+                      {order.customerPhone}
+                    </span>
                   </div>
                   {order.customerAddress && (
-                    <div className="flex items-start gap-3">
-                      <MapPin className="text-muted-foreground mt-0.5 h-4 w-4" />
-                      <span>{order.customerAddress}</span>
+                    <div className="flex items-start gap-4">
+                      <div className="bg-primary/10 mt-0.5 flex h-10 w-10 items-center justify-center rounded-lg">
+                        <FaMapMarkerAlt className="text-primary h-5 w-5" />
+                      </div>
+                      <span className="text-foreground">
+                        {order.customerAddress}
+                      </span>
                     </div>
                   )}
-                  <div className="flex items-center gap-3">
-                    <Calendar className="text-muted-foreground h-4 w-4" />
-                    <span>
-                      Booking Date:{" "}
+                  <div className="flex items-center gap-4">
+                    <div className="bg-secondary/10 flex h-10 w-10 items-center justify-center rounded-lg">
+                      <FaCalendarAlt className="text-secondary h-5 w-5" />
+                    </div>
+                    <span className="text-foreground">
                       {new Date(order.bookingDate).toLocaleDateString("en-GB", {
                         weekday: "long",
                         year: "numeric",
@@ -128,10 +156,12 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
                   {tourItems.map((item, index) => (
                     <div
                       key={index}
-                      className="flex justify-between rounded-lg border p-3"
+                      className="border-border flex items-center justify-between rounded-lg border p-4 transition-colors"
                     >
-                      <div>
-                        <p className="font-medium">{item.tourTitle}</p>
+                      <div className="flex-1">
+                        <p className="text-foreground font-medium">
+                          {item.tourTitle}
+                        </p>
                         <p className="text-muted-foreground text-sm">
                           Quantity: {item.quantity}
                         </p>
@@ -142,9 +172,11 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 flex justify-between border-t pt-4 text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-primary">
+                <div className="border-t-border mt-6 flex items-center justify-between border-t pt-4">
+                  <span className="text-foreground text-lg font-bold">
+                    Total
+                  </span>
+                  <span className="text-primary text-xl font-bold">
                     £{parseFloat(order.totalPrice).toFixed(2)}
                   </span>
                 </div>
@@ -152,22 +184,30 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
 
               {order.notes && (
                 <div className="border-t pt-6">
-                  <h3 className="font-heading mb-2 text-lg font-semibold">
+                  <h3 className="font-heading mb-3 text-lg font-semibold">
                     Notes
                   </h3>
-                  <p className="text-muted-foreground">{order.notes}</p>
+                  <div className="bg-muted/30 border-border rounded-lg border p-4">
+                    <p className="text-muted-foreground leading-relaxed">
+                      {order.notes}
+                    </p>
+                  </div>
                 </div>
               )}
 
-              <div className="bg-muted/50 rounded-lg border p-4">
+              <div className="bg-muted/30 border-border mt-6 rounded-lg border p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="text-muted-foreground text-sm font-medium">
+                    Status:
+                  </span>
+                  <span className="text-foreground font-semibold capitalize">
+                    {order.status
+                      ? order.status.charAt(0).toUpperCase() +
+                        order.status.slice(1)
+                      : "Pending"}
+                  </span>
+                </div>
                 <p className="text-muted-foreground text-sm">
-                  <strong>Status:</strong>{" "}
-                  {order.status
-                    ? order.status.charAt(0).toUpperCase() +
-                      order.status.slice(1)
-                    : "Pending"}
-                </p>
-                <p className="text-muted-foreground mt-2 text-sm">
                   We'll contact you soon to confirm the details of your booking.
                 </p>
               </div>
@@ -175,10 +215,10 @@ export default async function BookingConfirmationPage({ searchParams }: Props) {
           </Card>
 
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button asChild variant="outline" className="flex-1">
+            <Button asChild variant="outline" className="flex-1" size="lg">
               <Link href="/tours">Book Another Tour</Link>
             </Button>
-            <Button asChild className="flex-1">
+            <Button asChild className="flex-1" size="lg">
               <Link href="/">Return Home</Link>
             </Button>
           </div>

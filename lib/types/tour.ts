@@ -15,7 +15,14 @@ export type Tour = {
 
 export type TourCard = Pick<
   Tour,
-  "id" | "title" | "description" | "price" | "duration" | "location" | "images" | "sdgGoals"
+  | "id"
+  | "title"
+  | "description"
+  | "price"
+  | "duration"
+  | "location"
+  | "images"
+  | "sdgGoals"
 >;
 
 export const sdgLabels: Record<number, string> = {
@@ -23,4 +30,3 @@ export const sdgLabels: Record<number, string> = {
   12: "Responsible Consumption",
   15: "Life on Land",
 };
-

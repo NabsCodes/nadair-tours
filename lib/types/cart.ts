@@ -6,4 +6,3 @@ export type CartItem = {
   image?: string;
   quantity: number;
 };
-

@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ToursLoading() {
   return (
     <div className="container mx-auto space-y-8 px-4 py-16">
-      <div className="space-y-4">
+      <div className="flex flex-col items-center space-y-4 text-center">
         <Skeleton className="h-12 w-64" />
         <Skeleton className="h-6 w-96" />
       </div>
