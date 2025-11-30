@@ -8,6 +8,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | N'adair Tours",
@@ -50,6 +53,13 @@ export default async function AdminLayout({
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <span className="font-semibold">Admin Dashboard</span>
+          </div>
+          <div className="ml-auto flex items-center gap-2 px-4">
+            <Button size="icon" variant="outline" asChild>
+              <Link href="/">
+                <Home className="size-4" />
+              </Link>
+            </Button>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
