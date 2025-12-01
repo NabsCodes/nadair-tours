@@ -60,11 +60,18 @@ export default function AdminLoginPage() {
         toast.error("Invalid credentials", {
           description: "Please check your username and password and try again.",
         });
-      } else {
+      } else if (result?.ok) {
         toast.success("Welcome back!", {
           description: "You have been successfully signed in.",
         });
-        router.push("/admin");
+
+        // Small delay to ensure cookie is set, then use Next.js router
+        // The delay allows the browser to process the Set-Cookie header
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Use router.push with replace to avoid back button issues
+        // Then refresh to ensure middleware sees the new session
+        router.replace("/admin");
         router.refresh();
       }
     } catch {
