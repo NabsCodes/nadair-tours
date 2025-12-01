@@ -65,14 +65,11 @@ export default function AdminLoginPage() {
           description: "You have been successfully signed in.",
         });
 
-        // Small delay to ensure cookie is set, then use Next.js router
-        // The delay allows the browser to process the Set-Cookie header
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        // Use router.push with replace to avoid back button issues
-        // Then refresh to ensure middleware sees the new session
-        router.replace("/admin");
-        router.refresh();
+        // Use window.location for hard redirect - most reliable in production
+        // This ensures the session cookie is properly read by middleware
+        setTimeout(() => {
+          window.location.href = "/admin";
+        }, 500); // Small delay to show toast, then redirect
       }
     } catch {
       toast.error("Something went wrong", {
