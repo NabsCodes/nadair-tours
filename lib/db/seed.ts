@@ -3,6 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { db } from "./index";
 import { tours, adminUsers } from "./schema";
+import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 const sampleTours = [
@@ -216,18 +217,34 @@ async function seed() {
   console.log("🌱 Seeding database...");
 
   try {
-    // Create admin user
-    const hashedPassword = await bcrypt.hash("admin123", 10);
-    await db.insert(adminUsers).values({
-      username: "admin",
-      password: hashedPassword,
-      email: "admin@nadair-tours.com",
-    });
-    console.log("✅ Admin user created");
+    // Create admin user if it doesn't exist
+    const [existingAdmin] = await db
+      .select()
+      .from(adminUsers)
+      .where(eq(adminUsers.username, "admin"))
+      .limit(1);
 
-    // Insert tours
-    await db.insert(tours).values(sampleTours);
-    console.log(`✅ ${sampleTours.length} tours created`);
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash("admin123", 10);
+      await db.insert(adminUsers).values({
+        username: "admin",
+        password: hashedPassword,
+        email: "admin@nadair-tours.com",
+      });
+      console.log("✅ Admin user created");
+    } else {
+      console.log("ℹ️  Admin user already exists");
+    }
+
+    // Check if tours exist
+    const existingTours = await db.select().from(tours).limit(1);
+
+    if (existingTours.length === 0) {
+      await db.insert(tours).values(sampleTours);
+      console.log(`✅ ${sampleTours.length} tours created`);
+    } else {
+      console.log("ℹ️  Tours already exist, skipping tour seed");
+    }
 
     console.log("🎉 Database seeded successfully!");
   } catch (error) {
