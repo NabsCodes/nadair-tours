@@ -52,17 +52,6 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  cookies: {
-    sessionToken: {
-      name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -79,12 +68,6 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
       }
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      // Ensure redirects stay within the same origin
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

@@ -60,16 +60,12 @@ export default function AdminLoginPage() {
         toast.error("Invalid credentials", {
           description: "Please check your username and password and try again.",
         });
-      } else if (result?.ok) {
+      } else {
         toast.success("Welcome back!", {
           description: "You have been successfully signed in.",
         });
-
-        // Use window.location for hard redirect - most reliable in production
-        // This ensures the session cookie is properly read by middleware
-        setTimeout(() => {
-          window.location.href = "/admin";
-        }, 500); // Small delay to show toast, then redirect
+        router.push("/admin");
+        router.refresh();
       }
     } catch {
       toast.error("Something went wrong", {
