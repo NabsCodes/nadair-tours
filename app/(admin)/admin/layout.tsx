@@ -41,7 +41,7 @@ export default async function AdminLayout({
   const user = {
     name: session?.user?.name || "Admin",
     email: session?.user?.email || "",
-    image: session?.user?.image || null,
+    image: session?.user?.image ?? null,
   };
 
   return (
